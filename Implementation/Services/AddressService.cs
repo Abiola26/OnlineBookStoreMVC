@@ -158,30 +158,5 @@ namespace OnlineBookStoreMVC.Implementation.Services
                 DeliveryAddress = address.DeliveryAddress,
             };
         }
-
-        //public async Task<List<AddressDto>> GetUniqueAddressesByUserIdAsync(string userId)
-        //{
-        //    var addresses = await _context.Addresses
-        //        .Where(a => a.UserId == userId)
-        //        .ToListAsync();
-        //    var uniqueAddresses = addresses
-        //        .GroupBy(a => new { a.FullName, a.Street, a.City, a.State, a.PostalCode, a.Country, a.PhoneNumber, a.Email })
-        //        .Select(g => g.First())
-        //        .ToList();
-
-        //    return uniqueAddresses.Select(a => new AddressDto
-        //    {
-        //        Id = a.Id,
-        //        UserId = a.UserId,
-        //        FullName = a.FullName,
-        //        Email = a.Email,
-        //        PhoneNumber = a.PhoneNumber,
-        //        Street = a.Street,
-        //        City = a.City,
-        //        State = a.State,
-        //        PostalCode = a.PostalCode,
-        //        Country = a.Country
-        //    }).ToList();
-        //}
     }
 }
