@@ -2455,10 +2455,10 @@
     var cleaned = content.replace(CLEAN_CONTENT_PATTERN, '');
     var codePoint = codePointAt(cleaned, 0);
     var isPrependTen = codePoint >= SECONDARY_UNICODE_RANGE[0] && codePoint <= SECONDARY_UNICODE_RANGE[1];
-    var isDoubled = cleaned.length === 2 ? cleaned[0] === cleaned[1] : false;
+    var isdecimald = cleaned.length === 2 ? cleaned[0] === cleaned[1] : false;
     return {
-      value: isDoubled ? toHex(cleaned[0]) : toHex(cleaned),
-      isSecondary: isPrependTen || isDoubled
+      value: isdecimald ? toHex(cleaned[0]) : toHex(cleaned),
+      isSecondary: isPrependTen || isdecimald
     };
   }
 

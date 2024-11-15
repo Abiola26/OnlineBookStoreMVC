@@ -1,5 +1,131 @@
 ﻿@model OnlineBookStoreMVC.Models.RequestModels.BookRequestModel
 
+<div class="card shadow border-0 my-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Create Book</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <form asp-action="Create" method="post" class="row" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-10 mx-auto">
+                    <div class="border p-3">
+
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Title" class="form-control border-0 shadow" />
+                            <label asp-for="Title" class="ms-2">Title</label>
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <div class="py-2 col-12">
+                            <label asp-for="Description" class="ms-2 text-muted">Description</label>
+                            <textarea asp-for="Description" class="form-control border-0 shadow"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="ISBN" class="form-control border-0 shadow" />
+                            <label asp-for="ISBN" class="ms-2">ISBN</label>
+                            <span asp-validation-for="ISBN" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Author" class="form-control border-0 shadow" />
+                            <label asp-for="Author" class="ms-2">Author</label>
+                            <span asp-validation-for="Author" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="ListPrice" class="form-control border-0 shadow" />
+                            <label asp-for="ListPrice" class="ms-2">List Price</label>
+                            <span asp-validation-for="ListPrice" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Price" class="form-control border-0 shadow" />
+                            <label asp-for="Price" class="ms-2">Price</label>
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Price50" class="form-control border-0 shadow" />
+                            <label asp-for="Price50" class="ms-2">Price (50)</label>
+                            <span asp-validation-for="Price50" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Price100" class="form-control border-0 shadow" />
+                            <label asp-for="Price100" class="ms-2">Price (100)</label>
+                            <span asp-validation-for="Price100" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating py-2 col-12">
+                            <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select border-0 shadow">
+                                <option disabled selected>--Select Category--</option>
+                            </select>
+                            <label asp-for="CategoryId" class="ms-2">Category</label>
+                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Language" class="form-control border-0 shadow" />
+                            <label asp-for="Language" class="ms-2">Language</label>
+                            <span asp-validation-for="Language" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="TotalQuantity" class="form-control border-0 shadow" />
+                            <label asp-for="TotalQuantity" class="ms-2">Total Quantity</label>
+                            <span asp-validation-for="TotalQuantity" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Pages" class="form-control border-0 shadow" />
+                            <label asp-for="Pages" class="ms-2">Pages</label>
+                            <span asp-validation-for="Pages" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="CoverImageFile" type="file" class="form-control border-0 shadow" />
+                            <label asp-for="CoverImageFile" class="ms-2">Cover Image</label>
+                            <span asp-validation-for="CoverImageFile" class="text-danger"></span>
+                        </div>
+
+                        <div class="row pt-4">
+                            <div class="col-6 col-md-3">
+                                <button type="submit" class="btn btn-primary form-control">Create</button>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <a asp-action="Index" class="btn btn-outline-primary border form-control">Back to List</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'anchor autolink charmap codesample emoticons lists table visualblocks wordcount',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | align lineheight | numlist bullist indent outdent',
+        });
+    </script>
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
+
+
+@* @model OnlineBookStoreMVC.Models.RequestModels.BookRequestModel
+
 @{
     ViewData["Title"] = "Create Book";
 }
@@ -85,3 +211,4 @@
         <a asp-action="Index" class="btn btn-secondary">Back to List</a>
     </div>
 </div>
+ *@

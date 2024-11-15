@@ -1,6 +1,106 @@
 ﻿@model IEnumerable<OnlineBookStoreMVC.DTOs.BookDto>
 
 @{
+    ViewData["Title"] = "Book List";
+}
+
+<div class="card shadow border-0 my-4">
+    <!-- Card Header -->
+    <div class="card-header bg-secondary bg-gradient py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Book List</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card Body -->
+    <div class="card-body p-4">
+        <div class="row pb-3">
+            <div class="col-6">
+                <!-- Placeholder for additional content on the left, if needed -->
+            </div>
+            <div class="col-6 text-end">
+                <a asp-controller="Book" asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Create New Book
+                </a>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <table id="tblData" class="table table-bordered table-striped w-100">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>ISBN</th>
+                    <th>Price</th>
+                    <th>Author</th>
+                    <th>Category</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var book in Model)
+                {
+                    <tr>
+                        <td>@book.Title</td>
+                        <td>@book.ISBN</td>
+                        <td>@book.Price</td>
+                        <td>@book.Author</td>
+                        <td>@book.CategoryName</td>
+                       @*  <td>
+                            <a asp-controller="Book" asp-action="Edit" asp-route-id="@book.Id" class="btn btn-sm btn-primary">
+                                Edit
+                            </a>
+                            <form asp-controller="Book" asp-action="Delete" asp-route-id="@book.Id" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        </td> *@
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Include the JavaScript file for DataTables or custom scripts if needed -->
+       <script src="~/js/book.js"></script>
+}
+
+
+
+
+@* <div class="row pb-3">
+    <div class="col-md-6 d-flex align-items-center">
+        <!-- Placeholder for additional content on the left, if needed -->
+    </div>
+    <div class="col-md-6 text-end">
+        <a class="btn btn-primary mb-2" href="@Url.Action("Create")">
+            <i class="bi bi-plus-circle"></i> Create New Book
+        </a>
+        <a class="btn btn-success mb-2" asp-action="DownloadExcelTemplate">
+            <i class="bi bi-download"></i> Download Excel Template
+        </a>
+        <a class="btn btn-success mb-2" asp-action="UploadExcelTemplate">
+            <i class="bi bi-upload"></i> Upload Books
+        </a>
+        <a class="btn btn-primary mb-2" asp-action="GetBooksMissingCoverImage">
+            <i class="bi bi-image"></i> Missing Image List
+        </a>
+    </div>
+</div> *@
+
+
+
+
+
+
+
+@* @model IEnumerable<OnlineBookStoreMVC.DTOs.BookDto>
+
+@{
     ViewData["Title"] = "Books";
 }
 
@@ -153,3 +253,4 @@
     });
 });
 </script>
+ *@

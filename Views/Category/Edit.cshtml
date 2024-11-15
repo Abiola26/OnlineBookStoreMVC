@@ -4,6 +4,56 @@
     ViewData["Title"] = "Edit Category";
 }
 
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-secondary bg-gradient py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Edit Category</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div class="border p-3 mt-4">
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="Name" class="form-control border-0 shadow" placeholder="Category Name" />
+                    <label asp-for="Name" class="ms-2">Category Name</label>
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                @*  <div class="form-floating py-2 col-12">
+                <input asp-for="DisplayOrder" class="form-control border-0 shadow" placeholder="Display Order" />
+                <label asp-for="DisplayOrder" class="ms-2">Display Order</label>
+                <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+                </div> *@
+
+                <div class="row mt-3">
+                    <div class="col-6 col-md-3 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary flex-fill">
+                            <i class="fa fa-save"></i> Update
+                        </button>
+                        <a href="@Url.Action("Index", "Category")" class="btn btn-secondary flex-fill">
+                            <i class="fa fa-arrow-left"></i> Back to List
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
+
+@* @model OnlineBookStoreMVC.Models.RequestModels.CategoryRequestModel
+
+@{
+    ViewData["Title"] = "Edit Category";
+}
+
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -36,3 +86,4 @@
         </div>
     </div>
 </div>
+ *@

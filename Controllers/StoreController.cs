@@ -29,7 +29,6 @@ namespace BookStore.Controllers
             return View(books);
         }
 
-
         public async Task<IActionResult> Details(Guid id)
         {
             var book = await _bookService.GetBookByIdAsync(id);

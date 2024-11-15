@@ -16,14 +16,25 @@ namespace OnlineBookStoreMVC.Models.RequestModels
         [Required(ErrorMessage = "ISBN is required")]
         [StringLength(9, ErrorMessage = "ISBN must be 9 characters", MinimumLength = 9)]
         public string ISBN { get; set; }
+        [Required]
+        [Display(Name = "List Price")]
+        [Range(1, 1000)]
+        public decimal ListPrice { get; set; }
 
-        [Required(ErrorMessage = "Publisher is required")]
-        [StringLength(100, ErrorMessage = "Publisher name cannot be longer than 100 characters")]
-        public string Publisher { get; set; }
-
-        [Required(ErrorMessage = "Price is required")]
-        [Range(0.01, 10000, ErrorMessage = "Price must be between 0.01 and 10,000")]
+        [Required]
+        [Display(Name = "Price for 1-50")]
+        [Range(1, 1000)]
         public decimal Price { get; set; }
+
+        [Required]
+        [Display(Name = "Price for 50+")]
+        [Range(1, 1000)]
+        public decimal Price50 { get; set; }
+
+        [Required]
+        [Display(Name = "Price for 100+")]
+        [Range(1, 1000)]
+        public decimal Price100 { get; set; }
 
         [Required(ErrorMessage = "Author is required")]
         [StringLength(100, ErrorMessage = "Author name cannot be longer than 100 characters")]
@@ -33,9 +44,6 @@ namespace OnlineBookStoreMVC.Models.RequestModels
         public Guid CategoryId { get; set; }
 
         public IFormFile CoverImageFile { get; set; }
-
-        //[Url(ErrorMessage = "Please enter a valid URL for the cover image")]
-        //public string CoverImageUrl { get; set; }
 
         [Required(ErrorMessage = "Number of pages is required")]
         [Range(1, int.MaxValue, ErrorMessage = "Pages must be a positive number")]

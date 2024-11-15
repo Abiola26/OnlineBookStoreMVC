@@ -15,7 +15,7 @@
 
   if ($("#range_03").length) {
     $("#range_03").ionRangeSlider({
-      type: "double",
+      type: "decimal",
       grid: true,
       min: 0,
       max: 1000,
@@ -27,7 +27,7 @@
 
   if ($("#range_04").length) {
     $("#range_04").ionRangeSlider({
-      type: "double",
+      type: "decimal",
       min: 100,
       max: 200,
       from: 145,
@@ -40,7 +40,7 @@
 
   if ($("#range_05").length) {
     $("#range_05").ionRangeSlider({
-      type: "double",
+      type: "decimal",
       min: 1000,
       max: 2000,
       from: 1200,
@@ -53,7 +53,7 @@
 
   if ($("#range_06").length) {
     $("#range_06").ionRangeSlider({
-      type: "double",
+      type: "decimal",
       min: 1000,
       max: 2000,
       from: 1200,
@@ -66,7 +66,7 @@
 
   if ($("#range_07").length) {
     $("#range_07").ionRangeSlider({
-      type: "double",
+      type: "decimal",
       grid: true,
       min: 0,
       max: 10000,
@@ -88,7 +88,7 @@
 
   if ($("#range_09").length) {
     $("#range_09").ionRangeSlider({
-      type: "double",
+      type: "decimal",
       min: 0,
       max: 10000,
       grid: true
@@ -97,7 +97,7 @@
 
   if ($("#range_10").length) {
     $("#range_10").ionRangeSlider({
-      type: "double",
+      type: "decimal",
       min: 0,
       max: 10000,
       grid: true,
@@ -107,7 +107,7 @@
 
   if ($("#range_11").length) {
     $("#range_11").ionRangeSlider({
-      type: "double",
+      type: "decimal",
       min: 0,
       max: 10000,
       step: 500,
@@ -129,7 +129,7 @@
 
   if ($("#range_13").length) {
     $("#range_13").ionRangeSlider({
-      type: "double",
+      type: "decimal",
       min: 0,
       max: 100,
       from: 30,
@@ -161,7 +161,7 @@
 
   if ($("#range_16").length) {
     $("#range_16").ionRangeSlider({
-      type: "double",
+      type: "decimal",
       min: 0,
       max: 100,
       from: 20,

@@ -39,7 +39,9 @@ namespace OnlineBookStoreMVC.Implementation.Services
                 Title = b.Title,
                 Description = b.Description,
                 ISBN = b.ISBN,
-                Publisher = b.Publisher,
+                Price100 = b.Price100,
+                Price50 = b.Price50,
+                ListPrice = b.ListPrice,
                 Price = b.Price,
                 Author = b.Author,
                 CategoryId = b.CategoryId,
@@ -63,8 +65,10 @@ namespace OnlineBookStoreMVC.Implementation.Services
                 Title = b.Title,
                 Description = b.Description,
                 ISBN = b.ISBN,
-                Publisher = b.Publisher,
                 Price = b.Price,
+                ListPrice = b.ListPrice,
+                Price50 = b.Price50,
+                Price100 = b.Price100,
                 Author = b.Author,
                 CategoryId = b.CategoryId,
                 CategoryName = b.Category.Name,
@@ -89,7 +93,9 @@ namespace OnlineBookStoreMVC.Implementation.Services
                 Title = book.Title,
                 Description = book.Description,
                 ISBN = book.ISBN,
-                Publisher = book.Publisher,
+                ListPrice = book.ListPrice,
+                Price100 = book.Price100,
+                Price50 = book.Price50,
                 Price = book.Price,
                 Author = book.Author,
                 CategoryName = book.Category.Name,
@@ -118,7 +124,9 @@ namespace OnlineBookStoreMVC.Implementation.Services
                 Title = bookRequest.Title,
                 Description = bookRequest.Description,
                 ISBN = bookRequest.ISBN,
-                Publisher = bookRequest.Publisher,
+                Price50 = bookRequest.Price50,
+                Price100 = bookRequest.Price100,
+                ListPrice = bookRequest.ListPrice,
                 Price = bookRequest.Price,
                 Author = bookRequest.Author,
                 CategoryId = bookRequest.CategoryId,
@@ -138,7 +146,9 @@ namespace OnlineBookStoreMVC.Implementation.Services
                 Description = book.Description,
                 ISBN = book.ISBN,
                 Author = book.Author,
-                Publisher = book.Publisher,
+                Price100 = book.Price100,
+                Price50 = book.Price50,
+                ListPrice = book.ListPrice,
                 Price = book.Price,
                 CoverImageUrl = book.CoverImageUrl,
                 Pages = book.Pages,
@@ -146,7 +156,6 @@ namespace OnlineBookStoreMVC.Implementation.Services
                 TotalQuantity = book.TotalQuantity
             };
         }
-
 
         public async Task<BookDto> UpdateBookAsync(Guid id, BookRequestModel bookRequest)
         {
@@ -156,7 +165,9 @@ namespace OnlineBookStoreMVC.Implementation.Services
             book.Title = bookRequest.Title;
             book.Description = bookRequest.Description;
             book.ISBN = bookRequest.ISBN;
-            book.Publisher = bookRequest.Publisher;
+            book.Price50 = bookRequest.Price50;
+            book.Price100 = bookRequest.Price100;
+            book.ListPrice = bookRequest.ListPrice;
             book.Price = bookRequest.Price;
             book.Author = bookRequest.Author;
             book.CategoryId = bookRequest.CategoryId;
@@ -179,9 +190,11 @@ namespace OnlineBookStoreMVC.Implementation.Services
                 Title = book.Title,
                 Description = book.Description,
                 ISBN = book.ISBN,
-                Publisher = book.Publisher,
-                Author = book.Author,
+                Price100 = book.Price100,
+                Price50 = book.Price50,
+                ListPrice = book.ListPrice,
                 Price = book.Price,
+                Author = book.Author,
                 CoverImageUrl = book.CoverImageUrl,
                 Pages = book.Pages,
                 Language = book.Language,
@@ -225,13 +238,15 @@ namespace OnlineBookStoreMVC.Implementation.Services
             worksheet.Cells[1, 1].Value = "Title";
             worksheet.Cells[1, 2].Value = "Description";
             worksheet.Cells[1, 3].Value = "ISBN";
-            worksheet.Cells[1, 4].Value = "Publisher";
-            worksheet.Cells[1, 5].Value = "Price"; // Adjusted column numbers after removing Publication Date
-            worksheet.Cells[1, 6].Value = "Author";
-            worksheet.Cells[1, 7].Value = "Category Name";
-            worksheet.Cells[1, 8].Value = "Pages"; // Adjusted column numbers
-            worksheet.Cells[1, 9].Value = "Language";
-            worksheet.Cells[1, 10].Value = "Total Quantity";
+            worksheet.Cells[1, 4].Value = "Price";      // New column for Price
+            worksheet.Cells[1, 5].Value = "Price100";
+            worksheet.Cells[1, 6].Value = "Price50";
+            worksheet.Cells[1, 7].Value = "ListPrice";
+            worksheet.Cells[1, 8].Value = "Author";
+            worksheet.Cells[1, 9].Value = "Category Name";
+            worksheet.Cells[1, 10].Value = "Pages";
+            worksheet.Cells[1, 11].Value = "Language";
+            worksheet.Cells[1, 12].Value = "Total Quantity";
 
             var categoryRangeName = "CategoryList";
 
@@ -243,7 +258,7 @@ namespace OnlineBookStoreMVC.Implementation.Services
             worksheet.Names.Add(categoryRangeName, worksheet.Cells[2, 16, categories.Count() + 1, 16]);
 
             // Set data validation for the Category dropdown (Start from row 2)
-            var categoryValidation = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, 7, 100, 7].Address);
+            var categoryValidation = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, 9, 100, 9].Address);
             categoryValidation.ShowErrorMessage = true;
             categoryValidation.ErrorTitle = "Invalid selection";
             categoryValidation.Error = "Please select a valid category from the list.";
@@ -262,6 +277,7 @@ namespace OnlineBookStoreMVC.Implementation.Services
             };
         }
 
+
         public async Task UploadBooksFromExcelAsync(Stream excelStream)
         {
             try
@@ -279,13 +295,15 @@ namespace OnlineBookStoreMVC.Implementation.Services
                     var title = worksheet.Cells[row, 1]?.Value?.ToString()?.Trim();
                     var description = worksheet.Cells[row, 2]?.Value?.ToString()?.Trim();
                     var isbn = worksheet.Cells[row, 3]?.Value?.ToString()?.Trim();
-                    var publisher = worksheet.Cells[row, 4]?.Value?.ToString()?.Trim();
-                    var price = decimal.TryParse(worksheet.Cells[row, 5]?.Value?.ToString(), out var priceValue) ? priceValue : 0;
-                    var author = worksheet.Cells[row, 6]?.Value?.ToString()?.Trim();
-                    var categoryName = worksheet.Cells[row, 7]?.Value?.ToString()?.Trim();
-                    var pages = int.TryParse(worksheet.Cells[row, 8]?.Value?.ToString(), out var pageCount) ? pageCount : 0;
-                    var language = worksheet.Cells[row, 9]?.Value?.ToString()?.Trim();
-                    var totalQuantity = int.TryParse(worksheet.Cells[row, 10]?.Value?.ToString(), out var quantity) ? quantity : 0;
+                    var price = decimal.TryParse(worksheet.Cells[row, 4]?.Value?.ToString(), out var priceValue) ? priceValue : 0;
+                    var price100 = decimal.TryParse(worksheet.Cells[row, 5]?.Value?.ToString(), out var price100Value) ? priceValue : 0;
+                    var price50 = decimal.TryParse(worksheet.Cells[row, 6]?.Value?.ToString(), out var price50Value) ? priceValue : 0;
+                    var listPrice = decimal.TryParse(worksheet.Cells[row, 7]?.Value?.ToString(), out var listpriceValue) ? priceValue : 0;
+                    var author = worksheet.Cells[row, 8]?.Value?.ToString()?.Trim();
+                    var categoryName = worksheet.Cells[row, 9]?.Value?.ToString()?.Trim();
+                    var pages = int.TryParse(worksheet.Cells[row, 10]?.Value?.ToString(), out var pageCount) ? pageCount : 0;
+                    var language = worksheet.Cells[row, 11]?.Value?.ToString()?.Trim();
+                    var totalQuantity = int.TryParse(worksheet.Cells[row, 12]?.Value?.ToString(), out var quantity) ? quantity : 0;
 
                     // Validate required fields
                     if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(isbn))
@@ -307,8 +325,10 @@ namespace OnlineBookStoreMVC.Implementation.Services
                         Title = title,
                         Description = description,
                         ISBN = isbn,
-                        Publisher = publisher,
                         Price = price,
+                        Price100 = price100,
+                        Price50 = price50,
+                        ListPrice = listPrice,
                         Author = author,
                         CategoryId = category.Id,
                         Pages = pages,
@@ -334,6 +354,128 @@ namespace OnlineBookStoreMVC.Implementation.Services
                 throw new ApplicationException("An error occurred while processing the Excel file. Please try again later.", ex);
             }
         }
+
+
+        //public async Task<FileResult> DownloadExcelTemplateAsync()
+        //{
+        //    var categories = await _categoryService.GetCategorySelectList();
+
+        //    using var package = new ExcelPackage();
+        //    var worksheet = package.Workbook.Worksheets.Add("Book Template");
+
+        //    // Set header row
+        //    worksheet.Cells[1, 1].Value = "Title";
+        //    worksheet.Cells[1, 2].Value = "Description";
+        //    worksheet.Cells[1, 3].Value = "ISBN";
+        //    worksheet.Cells[1, 4].Value = "Publisher";
+        //    worksheet.Cells[1, 5].Value = "Price"; // Adjusted column numbers after removing Publication Date
+        //    worksheet.Cells[1, 6].Value = "Author";
+        //    worksheet.Cells[1, 7].Value = "Category Name";
+        //    worksheet.Cells[1, 8].Value = "Pages"; // Adjusted column numbers
+        //    worksheet.Cells[1, 9].Value = "Language";
+        //    worksheet.Cells[1, 10].Value = "Total Quantity";
+
+        //    var categoryRangeName = "CategoryList";
+
+        //    // Fill Category list and create named range
+        //    for (int i = 0; i < categories.Count(); i++)
+        //    {
+        //        worksheet.Cells[i + 2, 16].Value = categories.ElementAt(i).Text;
+        //    }
+        //    worksheet.Names.Add(categoryRangeName, worksheet.Cells[2, 16, categories.Count() + 1, 16]);
+
+        //    // Set data validation for the Category dropdown (Start from row 2)
+        //    var categoryValidation = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, 7, 100, 7].Address);
+        //    categoryValidation.ShowErrorMessage = true;
+        //    categoryValidation.ErrorTitle = "Invalid selection";
+        //    categoryValidation.Error = "Please select a valid category from the list.";
+        //    categoryValidation.Formula.ExcelFormula = $"={categoryRangeName}";
+
+        //    // Hide the columns where categories are listed
+        //    worksheet.Column(16).Hidden = true;
+
+        //    var stream = new MemoryStream();
+        //    package.SaveAs(stream);
+        //    stream.Position = 0;
+
+        //    return new FileStreamResult(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        //    {
+        //        FileDownloadName = "BookTemplate.xlsx"
+        //    };
+        //}
+
+        //public async Task UploadBooksFromExcelAsync(Stream excelStream)
+        //{
+        //    try
+        //    {
+        //        using var package = new ExcelPackage(excelStream);
+        //        var worksheet = package.Workbook.Worksheets.FirstOrDefault();
+        //        if (worksheet == null)
+        //        {
+        //            throw new ArgumentException("The Excel file is empty.");
+        //        }
+
+        //        var bookList = new List<BookRequestModel>();
+        //        for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
+        //        {
+        //            var title = worksheet.Cells[row, 1]?.Value?.ToString()?.Trim();
+        //            var description = worksheet.Cells[row, 2]?.Value?.ToString()?.Trim();
+        //            var isbn = worksheet.Cells[row, 3]?.Value?.ToString()?.Trim();
+        //            var publisher = worksheet.Cells[row, 4]?.Value?.ToString()?.Trim();
+        //            var price = decimal.TryParse(worksheet.Cells[row, 5]?.Value?.ToString(), out var priceValue) ? priceValue : 0;
+        //            var author = worksheet.Cells[row, 6]?.Value?.ToString()?.Trim();
+        //            var categoryName = worksheet.Cells[row, 7]?.Value?.ToString()?.Trim();
+        //            var pages = int.TryParse(worksheet.Cells[row, 8]?.Value?.ToString(), out var pageCount) ? pageCount : 0;
+        //            var language = worksheet.Cells[row, 9]?.Value?.ToString()?.Trim();
+        //            var totalQuantity = int.TryParse(worksheet.Cells[row, 10]?.Value?.ToString(), out var quantity) ? quantity : 0;
+
+        //            // Validate required fields
+        //            if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(isbn))
+        //            {
+        //                // Skip invalid rows and log a message
+        //                continue;
+        //            }
+
+        //            var category = await _categoryService.GetCategoryByNameAsync(categoryName);
+
+        //            if (category == null)
+        //            {
+        //                // Skip if category is not found and log a message
+        //                continue;
+        //            }
+
+        //            var bookRequest = new BookRequestModel
+        //            {
+        //                Title = title,
+        //                Description = description,
+        //                ISBN = isbn,
+        //                Publisher = publisher,
+        //                Price = price,
+        //                Author = author,
+        //                CategoryId = category.Id,
+        //                Pages = pages,
+        //                Language = language,
+        //                TotalQuantity = totalQuantity
+        //            };
+
+        //            bookList.Add(bookRequest);
+        //        }
+
+        //        // Create books
+        //        foreach (var bookRequest in bookList)
+        //        {
+        //            await CreateBookAsync(bookRequest);
+        //        }
+        //    }
+        //    catch (ArgumentException ex)
+        //    {
+        //        throw new ApplicationException("There was an issue with the Excel file format. Please ensure it is correctly structured.", ex);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new ApplicationException("An error occurred while processing the Excel file. Please try again later.", ex);
+        //    }
+        //}
 
 
         public async Task<bool> AddCoverImageAsync(Guid bookId, IFormFile coverImageFile)

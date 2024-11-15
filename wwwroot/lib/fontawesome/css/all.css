@@ -562,25 +562,25 @@ readers do not read off random characters that represent icons */
 .fa-angles-down::before {
   content: "\f103"; }
 
-.fa-angle-double-down::before {
+.fa-angle-decimal-down::before {
   content: "\f103"; }
 
 .fa-angles-left::before {
   content: "\f100"; }
 
-.fa-angle-double-left::before {
+.fa-angle-decimal-left::before {
   content: "\f100"; }
 
 .fa-angles-right::before {
   content: "\f101"; }
 
-.fa-angle-double-right::before {
+.fa-angle-decimal-right::before {
   content: "\f101"; }
 
 .fa-angles-up::before {
   content: "\f102"; }
 
-.fa-angle-double-up::before {
+.fa-angle-decimal-up::before {
   content: "\f102"; }
 
 .fa-ankh::before {
@@ -1444,7 +1444,7 @@ readers do not read off random characters that represent icons */
 .fa-check::before {
   content: "\f00c"; }
 
-.fa-check-double::before {
+.fa-check-decimal::before {
   content: "\f560"; }
 
 .fa-check-to-slot::before {
@@ -3442,7 +3442,7 @@ readers do not read off random characters that represent icons */
 .fa-mars-and-venus::before {
   content: "\f224"; }
 
-.fa-mars-double::before {
+.fa-mars-decimal::before {
   content: "\f227"; }
 
 .fa-mars-stroke::before {
@@ -5266,7 +5266,7 @@ readers do not read off random characters that represent icons */
 .fa-venus::before {
   content: "\f221"; }
 
-.fa-venus-double::before {
+.fa-venus-decimal::before {
   content: "\f226"; }
 
 .fa-venus-mars::before {

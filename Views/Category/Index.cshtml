@@ -4,6 +4,68 @@
     ViewData["Title"] = "Categories";
 }
 
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-secondary bg-gradient py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Category List</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <div class="row pb-3">
+            <div class="col-6">
+                <!-- Optional: add any content on the left if needed -->
+            </div>
+            <div class="col-6 text-end">
+                <a asp-action="Create" class="btn btn-dark">
+                    <i class="bi bi-plus-circle"></i> Create New Category
+                </a>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Category Name</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Name</td>
+                            <td class="text-center">
+                                <div class="btn-group" role="group">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-dark btn-sm mx-1">
+                                        <i class="bi bi-pencil-square"></i> Edit
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm mx-1">
+                                        <i class="bi bi-eye"></i> Details
+                                    </a>
+                                    <a asp-action="DeleteCategory" asp-route-id="@item.Id" class="btn btn-danger btn-sm mx-1">
+                                        <i class="bi bi-trash-fill"></i> Delete
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+@* @model IEnumerable<OnlineBookStoreMVC.DTOs.CategoryDto>
+
+@{
+    ViewData["Title"] = "Categories";
+}
+
 <div class="container my-4">
     <h2 class="text-center mb-4">Categories</h2>
 
@@ -35,3 +97,4 @@
         </table>
     </div>
 </div>
+ *@

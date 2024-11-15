@@ -112,7 +112,7 @@
     },
     xaxis: {
       tickColor: '#eee',
-      tickDecimals: 0,
+      tickdecimals: 0,
       font: {
         lineHeight: 15,
         style: "normal",
@@ -137,7 +137,7 @@
 
     yaxis: {
       tickColor: '#eee',
-      tickDecimals: 0,
+      tickdecimals: 0,
       font: {
         lineHeight: 15,
         style: "normal",
@@ -258,12 +258,12 @@
 
     },
     xaxis: {
-      tickDecimals: 0,
+      tickdecimals: 0,
       tickLength: 0
     },
 
     yaxis: {
-      tickDecimals: 0,
+      tickdecimals: 0,
       tickLength: 0
     },
 
@@ -294,12 +294,12 @@
 
     },
     xaxis: {
-      tickDecimals: 0,
+      tickdecimals: 0,
       ticks: false
     },
 
     yaxis: {
-      tickDecimals: 0,
+      tickdecimals: 0,
       ticks: false
     },
 

@@ -718,7 +718,7 @@
       // element that we'll be putting into a diagnostic iframe.
       // That means that this code won't compile until after the outer script has run and injected
       // this code into the iframe. There are some compile time errors that might occur there.
-      // For example, using single line (double-slash) comments like this one inside that function
+      // For example, using single line (decimal-slash) comments like this one inside that function
       // will probably cause it to choke. Chrome will show an error like this:
       // Uncaught SyntaxError: Unexpected end of input
 
