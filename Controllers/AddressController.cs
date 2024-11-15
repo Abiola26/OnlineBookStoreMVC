@@ -1,7 +1,5 @@
-﻿using AspNetCoreHero.ToastNotification.Abstractions;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using OnlineBookStoreMVC.Implementation.Interface;
-using OnlineBookStoreMVC.Implementation.Services;
 using OnlineBookStoreMVC.Models.RequestModels;
 using System.Security.Claims;
 
@@ -35,12 +33,11 @@ namespace OnlineBookStoreMVC.Controllers
 
             var model = new AddressRequestModel
             {
-                FullName = user.FullName 
+                FullName = user.FullName
             };
 
             return View(model);
         }
-
 
         [HttpPost]
         public async Task<IActionResult> AddAddress(AddressRequestModel model)
@@ -50,10 +47,36 @@ namespace OnlineBookStoreMVC.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpPost]
-        public async Task<IActionResult> UpdateAddress(Guid addressId, AddressRequestModel model)
+        [HttpGet] 
+        public async Task<IActionResult> EditAddress(Guid id)
         {
-            await _addressService.UpdateAddressAsync(addressId, model);
+            var address = await _addressService.GetAddressByIdAsync(id);
+            if (address == null) return NotFound();
+
+            var model = new AddressRequestModel
+            {
+                Id = address.Id,
+                FullName = address.FullName,
+                PhoneNumber = address.PhoneNumber,
+                DeliveryAddress = address.DeliveryAddress,
+                City = address.City,
+                Region = address.Region,
+                AddittionalPhoneNumber = address.AddittionalPhoneNumber,
+                IsDefault = address.IsDefault
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditAddress(AddressRequestModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            await _addressService.UpdateAddressAsync(model.Id, model);
             return RedirectToAction("Index");
         }
 
@@ -61,12 +84,9 @@ namespace OnlineBookStoreMVC.Controllers
         public async Task<IActionResult> SetDefaultAddress(Guid selectedAddress)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             await _addressService.SetDefaultAddressAsync(userId, selectedAddress);
-
-            return RedirectToAction("OrderSummary", "Order",  new { selectedAddress }); 
+            return RedirectToAction("OrderSummary", "Order", new { selectedAddressId = selectedAddress });
         }
-
     }
 }
 

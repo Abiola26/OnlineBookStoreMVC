@@ -26,12 +26,13 @@ namespace OnlineBookStoreMVC.Controllers
             _notyf = notyfService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
         {
-            var books = await _bookService.GetAllBooksAsync();
-            return View(books);
+            var paginatedBooks = await _bookService.GetPaginatedBooksAsync(page, pageSize);
+            return View(paginatedBooks);
         }
-         public async Task<IActionResult> GetBooksMissingCoverImage()
+
+        public async Task<IActionResult> GetBooksMissingCoverImage()
         {
             var books = await _bookService.GetBooksMissingCoverImageAsync();
             return View(books);
@@ -100,7 +101,6 @@ namespace OnlineBookStoreMVC.Controllers
             return View(bookRequest);
         }
 
-
         public async Task<IActionResult> Edit(Guid id)
         {
             ViewBag.Categories = await _categoryService.GetCategorySelectList();
@@ -130,7 +130,6 @@ namespace OnlineBookStoreMVC.Controllers
             return View(bookRequest);
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, BookRequestModel bookRequest)
@@ -141,7 +140,6 @@ namespace OnlineBookStoreMVC.Controllers
 
             return View(bookRequest);
         }
-
 
         [HttpPost]
         public async Task<IActionResult> DeleteBook(Guid id)
@@ -156,7 +154,6 @@ namespace OnlineBookStoreMVC.Controllers
             var fileResult = await _bookService.DownloadExcelTemplateAsync();
             return fileResult;
         }
-
         public async Task<IActionResult> UploadExcelTemplate()
         {
             return View();

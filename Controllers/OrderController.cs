@@ -4,7 +4,7 @@ using OnlineBookStoreMVC.DTOs;
 using OnlineBookStoreMVC.Implementation.Interface;
 using System.Security.Claims;
 using AspNetCoreHero.ToastNotification.Abstractions;
-using OnlineBookStoreMVC.Implementation.Services;
+using System.Drawing.Printing;
 
 namespace OnlineBookStoreMVC.Controllers
 {
@@ -38,40 +38,27 @@ namespace OnlineBookStoreMVC.Controllers
         public async Task<IActionResult> OrderSummary(Guid selectedAddressId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            // Fetch the selected address
             var selectedAddress = await _addressService.GetAddressByIdAsync(selectedAddressId);
-
-            // Ensure the address belongs to the current user
             if (selectedAddress == null || selectedAddress.UserId != userId)
             {
                 return BadRequest("Invalid address selected.");
             }
-
-            // Fetch the order summary using the selected address
             var orderSummary = await _orderService.GetOrderSummaryAsync(userId, selectedAddressId);
 
-            // Return the order summary view
+            if (orderSummary == null)
+            {
+                return NotFound("Order summary not found.");
+            }
             return View("OrderSummary", orderSummary);
         }
 
-
-
         //[HttpGet]
-        //public async Task<IActionResult> OrderSummary()
+        //public async Task<IActionResult> OrderSummaries()
         //{
         //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        //    var orderSummary = await _orderService.GetOrderSummaryAsync(userId);
-        //    return View("OrderSummary", orderSummary);
+        //    var orderSummaries = await _orderService.GetAllOrderSummariesAsync(userId);
+        //    return View(orderSummaries);
         //}
-
-        [HttpGet]
-        public async Task<IActionResult> OrderSummaries()
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var orderSummaries = await _orderService.GetAllOrderSummariesAsync(userId);
-            return View(orderSummaries);
-        }
 
         public async Task<IActionResult> CheckoutComplete(string userId)
         {
@@ -84,17 +71,18 @@ namespace OnlineBookStoreMVC.Controllers
         }
 
         [Authorize(Roles = "Admin,SuperAdmin")]
-        public async Task<IActionResult> ListOrders()
+        public async Task<IActionResult> ListOrders(int page = 1, int pageSize = 10)
         {
-            var orders = await _orderService.GetAllOrdersAsync();
-            return View(orders);
+            var paginatedOrders = await _orderService.GetPaginatedOrdersAsync(page, pageSize); 
+            return View(paginatedOrders);
         }
 
+
         [HttpGet]
-        public async Task<IActionResult> UserOrders(string userId)
+        public async Task<IActionResult> UserOrders(string userId,int page = 1,int pageSize = 10)
         {
-            var orders = await _orderService.GetOrdersByUserIdAsync(userId);
-            return View(orders);
+            var paginatedOrders = await _orderService.GetUserPaginatedOrdersAsync(page, pageSize,userId);
+            return View(paginatedOrders);
         }
 
         [HttpPost]
@@ -172,6 +160,5 @@ namespace OnlineBookStoreMVC.Controllers
 
             return RedirectToAction("AllPendingOrderSummaries");
         }
-
     }
 }
