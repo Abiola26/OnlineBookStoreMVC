@@ -50,43 +50,43 @@ namespace OnlineBookStoreMVC.Implementation.Services
                 TotalQuantity = b.TotalQuantity
             });
         }
-        public async Task<PaginatedDto<BookDto>> GetPaginatedBooksAsync(int page, int pageSize)
-        {
-            var totalBooks = await _context.Books.CountAsync(b => b.CoverImageUrl != null);
+        //public async Task<PaginatedDto<BookDto>> GetPaginatedBooksAsync(int page, int pageSize)
+        //{
+        //    var totalBooks = await _context.Books.CountAsync(b => b.CoverImageUrl != null);
 
-            var books = await _context.Books
-                .Where(b => b.CoverImageUrl != null)
-                .Include(b => b.Category)
-                .OrderBy(b => b.Title)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+        //    var books = await _context.Books
+        //        .Where(b => b.CoverImageUrl != null)
+        //        .Include(b => b.Category)
+        //        .OrderBy(b => b.Title)
+        //        .Skip((page - 1) * pageSize)
+        //        .Take(pageSize)
+        //        .ToListAsync();
 
-            var bookDtos = books.Select(b => new BookDto
-            {
-                Id = b.Id,
-                Title = b.Title,
-                Description = b.Description,
-                ISBN = b.ISBN,
-                Publisher = b.Publisher,
-                Price = b.Price,
-                Author = b.Author,
-                CategoryId = b.CategoryId,
-                CategoryName = b.Category.Name,
-                CoverImageUrl = b.CoverImageUrl,
-                Pages = b.Pages,
-                Language = b.Language,
-                TotalQuantity = b.TotalQuantity
-            }).ToList();
+        //    var bookDtos = books.Select(b => new BookDto
+        //    {
+        //        Id = b.Id,
+        //        Title = b.Title,
+        //        Description = b.Description,
+        //        ISBN = b.ISBN,
+        //        //Publisher = b.Publisher,
+        //        Price = b.Price,
+        //        Author = b.Author,
+        //        CategoryId = b.CategoryId,
+        //        CategoryName = b.Category.Name,
+        //        CoverImageUrl = b.CoverImageUrl,
+        //        Pages = b.Pages,
+        //        Language = b.Language,
+        //        TotalQuantity = b.TotalQuantity
+        //    }).ToList();
 
-            return new PaginatedDto<BookDto>
-            {
-                Items = bookDtos,
-                TotalCount = totalBooks,
-                CurrentPage = page,
-                PageSize = pageSize
-            };
-        }
+        //    return new PaginatedDto<BookDto>
+        //    {
+        //        Items = bookDtos,
+        //        TotalCount = totalBooks,
+        //        CurrentPage = page,
+        //        PageSize = pageSize
+        //    };
+        //}
 
         public async Task<IEnumerable<BookDto>> GetBooksMissingCoverImageAsync()
         {

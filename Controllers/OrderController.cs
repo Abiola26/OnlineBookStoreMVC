@@ -5,6 +5,9 @@ using OnlineBookStoreMVC.Implementation.Interface;
 using System.Security.Claims;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using System.Drawing.Printing;
+using Microsoft.AspNetCore.Identity;
+using OnlineBookStoreMVC.Enums;
+using OnlineBookStoreMVC.Entities;
 
 namespace OnlineBookStoreMVC.Controllers
 {
@@ -17,8 +20,13 @@ namespace OnlineBookStoreMVC.Controllers
         private readonly IDeliveryService _deliveryService;
         private readonly PaymentService _paymentService;
         private readonly INotyfService _notyf;
+        private readonly UserManager<User> _userManager;
+        private readonly ILogger<OrderController> _logger;
 
-        public OrderController(IAddressService addressService,IOrderService orderService, IShoppingCartService shoppingCartService, PaymentService paymentService, IDeliveryService deliveryService, INotyfService notyf)
+        public OrderController(IAddressService addressService,IOrderService orderService, 
+                                IShoppingCartService shoppingCartService, PaymentService paymentService, 
+                                IDeliveryService deliveryService, INotyfService notyf, ILogger<OrderController> logger,
+                                UserManager<User> userManager)
         {
             _addressService = addressService;
             _orderService = orderService;
@@ -26,6 +34,8 @@ namespace OnlineBookStoreMVC.Controllers
             _paymentService = paymentService;
             _deliveryService = deliveryService;
             _notyf = notyf;
+            _logger = logger;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> OrderDetails(Guid id)
@@ -33,6 +43,7 @@ namespace OnlineBookStoreMVC.Controllers
             var order = await _orderService.GetOrderDetailsAsync(id);
             return View(order);
         }
+      
 
         [HttpGet]
         public async Task<IActionResult> OrderSummary(Guid selectedAddressId)
@@ -52,13 +63,6 @@ namespace OnlineBookStoreMVC.Controllers
             return View("OrderSummary", orderSummary);
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> OrderSummaries()
-        //{
-        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        //    var orderSummaries = await _orderService.GetAllOrderSummariesAsync(userId);
-        //    return View(orderSummaries);
-        //}
 
         public async Task<IActionResult> CheckoutComplete(string userId)
         {
@@ -71,19 +75,27 @@ namespace OnlineBookStoreMVC.Controllers
         }
 
         [Authorize(Roles = "Admin,SuperAdmin")]
-        public async Task<IActionResult> ListOrders(int page = 1, int pageSize = 10)
+        public async Task<IActionResult> ListOrders()
         {
-            var paginatedOrders = await _orderService.GetPaginatedOrdersAsync(page, pageSize); 
-            return View(paginatedOrders);
+            var orders = await _orderService.GetAllOrdersAsync(); 
+            return View(orders);
         }
 
+        //public async Task<IActionResult> FilterOrders(OrderStatus status, string userId = null)
+        //{
+        //    userId ??= _userManager.GetUserId(User); // Get the current user's ID if not provided
+        //    var orders = await _orderService.GetOrdersByStatusAsync(status, userId);
+
+        //    return View("OrderList", orders); // Use the appropriate view to display the orders
+        //}
 
         [HttpGet]
-        public async Task<IActionResult> UserOrders(string userId,int page = 1,int pageSize = 10)
+        public async Task<IActionResult> FilterOrders(OrderStatus? status)
         {
-            var paginatedOrders = await _orderService.GetUserPaginatedOrdersAsync(page, pageSize,userId);
-            return View(paginatedOrders);
+            var orders = await _orderService.GetOrdersByStatusAsync(status ?? OrderStatus.All);
+            return View(orders);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> DeleteOrder(Guid id)

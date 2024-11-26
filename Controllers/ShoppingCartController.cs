@@ -91,33 +91,6 @@ namespace OnlineBookStoreMVC.Controllers
         }
 
 
-
-        //// POST: ShoppingCart/Reduce
-        //[HttpPost]
-        //public async Task<IActionResult> ReduceCartItemQuantity(string userId, Guid bookId)
-        //{
-        //    var remainingQuantity = await _shoppingCartService.ReduceQuantityAsync(userId, bookId);
-        //    _notyf.Success("Cart item quantity has been successfully reduced.");
-        //    return RedirectToAction("Index", new { userId });
-        //}
-
-        //// POST: ShoppingCart/Increase
-        //[HttpPost]
-        //public async Task<IActionResult> IncreaseCartItemQuantity(string userId, Guid bookId)
-        //{
-        //    var remainingQuantity = await _shoppingCartService.IncreaseQuantityAsync(userId, bookId);
-        //    _notyf.Success("Cart item quantity has been successfully increased.");
-        //    return RedirectToAction("Index", new { userId });
-        //}
-        //// POST: ShoppingCart/Remove
-        //[HttpPost]
-        //public async Task<IActionResult> RemoveCartItem(string userId, Guid bookId)
-        //{
-        //    await _shoppingCartService.RemoveFromCartAsync(userId, bookId);
-        //    _notyf.Success("Book has been successfully removed from the cart.");
-        //    return RedirectToAction("Index", new { userId });
-        //}
-
         // POST: ShoppingCart/Clear
         [HttpPost]
         public async Task<IActionResult> ClearCart(string userId)

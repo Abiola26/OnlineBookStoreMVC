@@ -1,5 +1,6 @@
 ﻿using OnlineBookStoreMVC.DTOs;
 using OnlineBookStoreMVC.Entities;
+using OnlineBookStoreMVC.Enums;
 
 namespace OnlineBookStoreMVC.Implementation.Interface
 {
@@ -10,8 +11,7 @@ namespace OnlineBookStoreMVC.Implementation.Interface
         Task<IEnumerable<OrderDto>> GetAllOrdersAsync();
         Task<OrderDto> GetOrderDetailsAsync(Guid id);
         Task<bool> DeleteOrderAsync(Guid id);
-        Task<PaginatedDto<OrderDto>> GetPaginatedOrdersAsync(int page, int pageSize);
-        Task<PaginatedDto<OrderDto>> GetUserPaginatedOrdersAsync(int page, int pageSize, string userId);
+        Task<IEnumerable<OrderDto>> GetOrdersByStatusAsync(OrderStatus status, string userId = null);
         Task<OrderDto> PlaceOrderAsync(OrderSummaryDto orderSummary);
         Task<IEnumerable<OrderDto>> GetAllPendingOrdersAsync(string userId);
         List<Order> GetAllOrders();

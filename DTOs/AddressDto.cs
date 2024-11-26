@@ -13,5 +13,6 @@ namespace OnlineBookStoreMVC.DTOs
         public string Region { get; set; }
         public string DeliveryAddress { get; set; }
         public bool IsDefault { get; set; }
+
     }
 }
