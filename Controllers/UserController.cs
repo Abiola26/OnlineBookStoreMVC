@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Identity;
 using OnlineBookStoreMVC.Entities;
+using OnlineBookStoreMVC.Implementation.Services;
 
 [Route("[controller]")]
 public class UserController : Controller
@@ -25,10 +26,10 @@ public class UserController : Controller
 
     [Authorize(Roles = "Admin,SuperAdmin")]
     [HttpGet]
-    public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
+    public async Task<IActionResult> Index()
     {
-        var paginatedUsers = await _userService.GetPaginatedUsersAsync(page, pageSize);
-        return View(paginatedUsers);
+        var users = await _userService.GetAllUsersAsync();
+        return View(users);
     }
 
 

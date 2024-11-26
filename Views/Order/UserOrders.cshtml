@@ -1,4 +1,4 @@
-﻿@model OnlineBookStoreMVC.DTOs.PaginatedDto<OnlineBookStoreMVC.DTOs.OrderDto>
+﻿@model IEnumerable<OnlineBookStoreMVC.DTOs.OrderDto>
 
 @{
     ViewData["Title"] = "User Orders";
@@ -17,7 +17,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var order in Model.Items)
+        @foreach (var order in Model)
         {
             <tr>
                 <td>@order.Id</td>
@@ -31,7 +31,7 @@
         }
     </tbody>
 </table>
-<nav>
+@* <nav>
     <ul class="pagination justify-content-end">
         @for (int i = 1; i <= Model.TotalPages; i++)
         {
@@ -40,4 +40,4 @@
             </li>
         }
     </ul>
-</nav>
+</nav> *@

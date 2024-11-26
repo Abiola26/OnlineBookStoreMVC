@@ -15,6 +15,7 @@ namespace OnlineBookStoreMVC.DTOs
         public string DeliveryName { get; set; } 
         public string DeliveryPhoneNumber { get; set; } 
         public OrderStatus OrderStatus { get; set; }
+        public string Status { get; set; }
     }
 
 }

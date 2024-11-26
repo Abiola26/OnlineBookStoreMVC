@@ -1,49 +1,64 @@
-﻿@model OnlineBookStoreMVC.DTOs.PaginatedDto<OnlineBookStoreMVC.DTOs.UserDto>
+﻿@model IEnumerable<OnlineBookStoreMVC.DTOs.UserDto>
 
 @{
     ViewData["Title"] = "User List";
 }
 
-<h2>User List</h2>
+<div class="card shadow border-0 my-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">User List</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <table id="tblData" class="table table-bordered table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Role</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Full Name</th>
+                    <th>Phone Number</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>@user.Role</td>
+                        <td>@user.Username</td>
+                        <td>@user.Email</td>
+                        <td>@user.FullName</td>
+                        <td>@user.PhoneNumber</td>
+                        <td>
+                            @if (User.IsInRole("SuperAdmin"))
+                            {
+                                <a asp-controller="Admin" asp-action="AssignRole" asp-route-userId="@user.Id" class="btn btn-primary btn-sm">Permission</a>
+                            }
+                            @if (user.Role.ToString() != "SuperAdmin")
+                            {
+                                <a asp-controller="User" asp-action="Edit" asp-route-id="@user.Id" class="btn btn-secondary btn-sm">Edit</a>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Role</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Full Name</th>
-            <th>Phone Number</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in Model.Items)  
-        {
-            <tr>
-                <td>@user.Role</td>
-                <td>@user.Username</td>
-                <td>@user.Email</td>
-                <td>@user.FullName</td>
-                <td>@user.PhoneNumber</td>
-                <td>
-                    @if (User.IsInRole("SuperAdmin"))
-                    {
-                        <a asp-controller="Admin" asp-action="AssignRole" asp-route-userId="@user.Id" class="btn btn-primary">Assign Role</a>
-                    }
-                    @if (user.Role.ToString() != "SuperAdmin")
-                    {
-                        <a asp-controller="User" asp-action="Edit" asp-route-id="@user.Id" class="btn btn-secondary">Edit</a>
+                                <form asp-action="Delete" asp-controller="User" asp-route-id="@user.Id" method="post" style="display:inline;">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
 
-                        <form asp-action="Delete" asp-controller="User" asp-route-id="@user.Id" method="post" style="display:inline;">
-                            @Html.AntiForgeryToken()
-                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                        </form>
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+        <div class="text-end">
+            <a asp-controller="User" asp-action="Create" class="btn btn-success mt-3">Create New User</a>
+        </div>
+    </div>
+</div>
 
-<a asp-controller="User" asp-action="Create" class="btn btn-success">Create New User</a>
+@section Scripts {
+    <script src="~/js/user.js"></script>
+}

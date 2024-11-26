@@ -62,47 +62,6 @@ namespace OnlineBookStoreMVC.Implementation.Services
             _logger.LogInformation("Successfully retrieved all users.");
             return userDtos;
         }
-        public async Task<PaginatedDto<UserDto>> GetPaginatedUsersAsync(int page, int pageSize)
-        {
-            _logger.LogInformation("Getting paginated users.");
-
-            var totalUsers = await _userManager.Users.CountAsync();
-
-            var users = await _userManager.Users
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            var userDtos = new List<UserDto>();
-
-            foreach (var user in users)
-            {
-                var roles = await _userManager.GetRolesAsync(user);
-                var role = roles.FirstOrDefault() ?? Role.User.ToString();
-
-                userDtos.Add(new UserDto
-                {
-                    Id = user.Id,
-                    Username = user.UserName,
-                    Email = user.Email,
-                    Role = Enum.Parse<Role>(role),
-                    FullName = user.FullName,
-                    Gender = user.Gender.ToString(),
-                    PhoneNumber = user.PhoneNumber
-                });
-            }
-
-            _logger.LogInformation("Successfully retrieved paginated users.");
-
-            return new PaginatedDto<UserDto>
-            {
-                Items = userDtos,
-                TotalCount = totalUsers,
-                CurrentPage = page,
-                PageSize = pageSize
-            };
-        }
-
 
         public async Task<UserDto> GetUserByIdAsync(string id)
         {

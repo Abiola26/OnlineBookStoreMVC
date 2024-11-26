@@ -19,7 +19,9 @@ namespace OnlineBookStoreMVC.Implementation.Services
         private readonly UserManager<User> _userManager;
         private readonly ILogger<OrderService> _logger;
 
-        public OrderService(ApplicationDbContext context, IShoppingCartService shoppingCartService, IEmailService emailService, IHttpContextAccessor httpContextAccessor, UserManager<User> userManager, ILogger<OrderService> logger)
+        public OrderService(ApplicationDbContext context, IShoppingCartService shoppingCartService, 
+                            IEmailService emailService, IHttpContextAccessor httpContextAccessor, 
+                            UserManager<User> userManager, ILogger<OrderService> logger)
         {
             _context = context;
             _shoppingCartService = shoppingCartService;
@@ -58,141 +60,8 @@ namespace OnlineBookStoreMVC.Implementation.Services
                 }).ToList(),
                 TotalAmount = order.TotalAmount
             };
-        }
-
-        public async Task<IEnumerable<OrderDto>> GetAllOrdersAsync()
-        {
-            var orders = await _context.Orders
-                .Include(o => o.OrderItems)
-                    .ThenInclude(oi => oi.Book)
-                .Include(o => o.User)
-                .ToListAsync();
-
-            return orders.Select(order => new OrderDto
-            {
-                Id = order.Id,
-                UserId = order.UserId,
-                UserName = order.User?.UserName ?? "Unknown User",
-                OrderDate = order.OrderDate,
-                OrderItems = order.OrderItems.Select(oi => new OrderItemDto
-                {
-                    Id = oi.Id,
-                    BookId = oi.BookId,
-                    BookTitle = oi.Book.Title,
-                    Quantity = oi.Quantity,
-                    UnitPrice = oi.UnitPrice
-                }).ToList(),
-                TotalAmount = order.TotalAmount
-            });
-        }
-
-        public async Task<PaginatedDto<OrderDto>> GetPaginatedOrdersAsync(int page, int pageSize)
-        {
-            var totalOrders = await _context.Orders.CountAsync();
-
-            var orders = await _context.Orders
-                .Where(o => o.OrderStatus == OrderStatus.Received || o.OrderStatus == OrderStatus.Shipping)
-                .Include(o => o.OrderItems)
-                  .ThenInclude(oi => oi.Book)
-                .Include(o => o.User)
-                .OrderBy(o => o.OrderDate)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            var orderDtos = orders.Select(order => new OrderDto
-            {
-                Id = order.Id,
-                UserId = order.UserId,
-                UserName = order.User?.UserName ?? "Unknown User",
-                OrderDate = order.OrderDate,
-                TotalAmount = order.TotalAmount,
-                OrderItems = order.OrderItems.Select(oi => new OrderItemDto
-                {
-                    Id = oi.Id,
-                    BookId = oi.BookId,
-                    BookTitle = oi.Book.Title,
-                    Quantity = oi.Quantity,
-                    UnitPrice = oi.UnitPrice
-                }).ToList()
-            }).ToList();
-
-            return new PaginatedDto<OrderDto>
-            {
-                Items = orderDtos,
-                TotalCount = totalOrders,
-                CurrentPage = page,
-                PageSize = pageSize
-            };
-        }
-
-        public async Task<PaginatedDto<OrderDto>> GetUserPaginatedOrdersAsync(int page, int pageSize, string userId)
-        {
-            var totalOrders = await _context.Orders.CountAsync();
-
-            var orders = await _context.Orders
-                .Where(o => o.UserId == userId)
-                .Include(o => o.OrderItems)
-                  .ThenInclude(oi => oi.Book)
-                .Include(o => o.User)
-                .OrderBy(o => o.OrderDate)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            var orderDtos = orders.Select(order => new OrderDto
-            {
-                Id = order.Id,
-                UserId = order.UserId,
-                UserName = order.User?.UserName ?? "Unknown User",
-                OrderDate = order.OrderDate,
-                TotalAmount = order.TotalAmount,
-                OrderItems = order.OrderItems.Select(oi => new OrderItemDto
-                {
-                    Id = oi.Id,
-                    BookId = oi.BookId,
-                    BookTitle = oi.Book.Title,
-                    Quantity = oi.Quantity,
-                    UnitPrice = oi.UnitPrice
-                }).ToList()
-            }).ToList();
-
-            return new PaginatedDto<OrderDto>
-            {
-                Items = orderDtos,
-                TotalCount = totalOrders,
-                CurrentPage = page,
-                PageSize = pageSize
-            };
-        }
-
-        public async Task<IEnumerable<OrderDto>> GetAllPendingOrdersAsync(string userId)
-        {
-            var orders = await _context.Orders
-                .Where(o => o.OrderStatus == OrderStatus.Pending)
-                .Include(o => o.OrderItems) 
-                    .ThenInclude(oi => oi.Book)
-                .Include(o => o.User)
-                .ToListAsync();
-
-            return orders.Select(order => new OrderDto
-            {
-                Id = order.Id,
-                UserId = order.UserId,
-                UserName = order.User?.UserName ?? "Unknown User",
-                OrderDate = order.OrderDate,
-                OrderItems = order.OrderItems.Select(oi => new OrderItemDto
-                {
-                    Id = oi.Id,
-                    BookId = oi.BookId,
-                    BookTitle = oi.Book.Title,
-                    Quantity = oi.Quantity,
-                    UnitPrice = oi.UnitPrice
-                }).ToList(),
-                TotalAmount = order.TotalAmount
-            });
-        }
-
+        }     
+     
         public async Task<IEnumerable<OrderDto>> GetOrdersByUserIdAsync(string userId)
         {
             var orders = await _context.Orders
@@ -218,50 +87,16 @@ namespace OnlineBookStoreMVC.Implementation.Services
                 TotalAmount = order.TotalAmount
             });
         }
-
-        public async Task<OrderDto> GetOrderDetailsAsync(Guid id)
-        {
-            var order = await _context.Orders
-                .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Book)
-                .Include(o => o.User)
-                .FirstOrDefaultAsync(o => o.Id == id);
-
-            if (order == null) return null;
-
-            return new OrderDto
-            {
-                Id = order.Id,
-                UserId = order.UserId,
-                UserName = order.User.UserName ?? "Unknown User",
-                OrderDate = order.OrderDate,
-                OrderItems = order.OrderItems.Select(oi => new OrderItemDto
-                {
-                    Id = oi.Id,
-                    BookId = oi.BookId,
-                    BookTitle = oi.Book?.Title ?? "Unknown Book",
-                    Quantity = oi.Quantity,
-                    UnitPrice = oi.UnitPrice
-                }).ToList(),
-                TotalAmount = order.TotalAmount
-            };
-        }
-
-        public async Task<bool> DeleteOrderAsync(Guid id)
-        {
-            var order = await _context.Orders.Include(o => o.OrderItems)
-                                             .FirstOrDefaultAsync(o => o.Id == id);
-            if (order == null) return false;
-
-            _context.Orders.Remove(order);
-            await _context.SaveChangesAsync();
-
-            return true;
-        }
-
         public async Task<OrderSummaryDto> GetOrderSummaryAsync(string userId, Guid? selectedAddressId)
         {
             var cart = await _shoppingCartService.GetCartAsync(userId);
+
+            // Check if the cart is null or empty
+            if (cart == null || cart.ShoppingCartItems == null || !cart.ShoppingCartItems.Any())
+            {
+                throw new Exception("Shopping cart is empty.");
+            }
+
             var address = selectedAddressId.HasValue
                 ? await _context.Addresses.FirstOrDefaultAsync(a => a.Id == selectedAddressId.Value && a.UserId == userId)
                 : await _context.Addresses
@@ -276,7 +111,7 @@ namespace OnlineBookStoreMVC.Implementation.Services
 
             return new OrderSummaryDto
             {
-                ShoppingCart = cart ?? new ShoppingCartDto(),
+                ShoppingCart = cart,  // This should have the cart details with items
                 UserId = userId,
                 Address = new AddressDto
                 {
@@ -387,6 +222,137 @@ namespace OnlineBookStoreMVC.Implementation.Services
                 throw;
             }
         }
+        public async Task<IEnumerable<OrderDto>> GetOrdersByStatusAsync(OrderStatus status, string userId = null)
+        {
+            var query = _context.Orders
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Book)
+                .Include(o => o.User)
+                .AsQueryable();
+
+            if (status != OrderStatus.Pending) // For 'All', return all orders
+            {
+                query = query.Where(o => o.OrderStatus == status);
+            }
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                query = query.Where(o => o.UserId == userId);
+            }
+
+            var orders = await query.ToListAsync();
+
+            return orders.Select(order => new OrderDto
+            {
+                Id = order.Id,
+                UserId = order.UserId,
+                UserName = order.User?.UserName ?? "Unknown User",
+                OrderDate = order.OrderDate,
+                OrderItems = order.OrderItems.Select(oi => new OrderItemDto
+                {
+                    Id = oi.Id,
+                    BookId = oi.BookId,
+                    BookTitle = oi.Book.Title,
+                    Quantity = oi.Quantity,
+                    UnitPrice = oi.UnitPrice
+                }).ToList(),
+                TotalAmount = order.TotalAmount,
+                Status = order.OrderStatus.ToString()
+            });
+        }
+
+
+        public async Task<OrderDto> GetOrderDetailsAsync(Guid id)
+        {
+            var order = await _context.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Book)
+                .Include(o => o.User)
+                .FirstOrDefaultAsync(o => o.Id == id);
+
+            if (order == null) return null;
+
+            return new OrderDto
+            {
+                Id = order.Id,
+                UserId = order.UserId,
+                UserName = order.User.UserName ?? "Unknown User",
+                OrderDate = order.OrderDate,
+                OrderItems = order.OrderItems.Select(oi => new OrderItemDto
+                {
+                    Id = oi.Id,
+                    BookId = oi.BookId,
+                    BookTitle = oi.Book?.Title ?? "Unknown Book",
+                    Quantity = oi.Quantity,
+                    UnitPrice = oi.UnitPrice
+                }).ToList(),
+                TotalAmount = order.TotalAmount
+            };
+        }
+
+        public async Task<bool> DeleteOrderAsync(Guid id)
+        {
+            var order = await _context.Orders.Include(o => o.OrderItems)
+                                             .FirstOrDefaultAsync(o => o.Id == id);
+            if (order == null) return false;
+
+            _context.Orders.Remove(order);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<IEnumerable<OrderDto>> GetAllOrdersAsync()
+        {
+            var orders = await _context.Orders
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Book)
+                .Include(o => o.User)
+                .ToListAsync();
+
+            return orders.Select(order => new OrderDto
+            {
+                Id = order.Id,
+                UserId = order.UserId,
+                UserName = order.User?.UserName ?? "Unknown User",
+                OrderDate = order.OrderDate,
+                OrderItems = order.OrderItems.Select(oi => new OrderItemDto
+                {
+                    Id = oi.Id,
+                    BookId = oi.BookId,
+                    BookTitle = oi.Book.Title,
+                    Quantity = oi.Quantity,
+                    UnitPrice = oi.UnitPrice
+                }).ToList(),
+                TotalAmount = order.TotalAmount
+            });
+        }
+        public async Task<IEnumerable<OrderDto>> GetAllPendingOrdersAsync(string userId)
+        {
+            var orders = await _context.Orders
+                .Where(o => o.OrderStatus == OrderStatus.Pending)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Book)
+                .Include(o => o.User)
+                .ToListAsync();
+
+            return orders.Select(order => new OrderDto
+            {
+                Id = order.Id,
+                UserId = order.UserId,
+                UserName = order.User?.UserName ?? "Unknown User",
+                OrderDate = order.OrderDate,
+                OrderItems = order.OrderItems.Select(oi => new OrderItemDto
+                {
+                    Id = oi.Id,
+                    BookId = oi.BookId,
+                    BookTitle = oi.Book.Title,
+                    Quantity = oi.Quantity,
+                    UnitPrice = oi.UnitPrice
+                }).ToList(),
+                TotalAmount = order.TotalAmount
+            });
+        }
 
         public async Task<OrderDto> AssignDeliveryToOrderAsync(Guid orderId, Guid deliveryId)
         {
@@ -410,7 +376,7 @@ namespace OnlineBookStoreMVC.Implementation.Services
             order.DeliveryId = delivery.Id;
             order.OrderStatus = OrderStatus.Shipping;
 
-           
+
             _context.Orders.Update(order);
             await _context.SaveChangesAsync();
             return new OrderDto

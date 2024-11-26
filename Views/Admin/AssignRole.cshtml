@@ -4,6 +4,69 @@
     ViewData["Title"] = "Assign Role";
 }
 
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Manage User Role</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <form asp-controller="Admin" asp-action="AssignRole" method="post" class="row">
+            <input type="hidden" name="userId" value="@ViewBag.UserId" />
+
+            <!-- Display Username (Read-Only) -->
+            <div class="form-floating col-12 py-2">
+                <input type="text" class="form-control border-0 shadow" value="@ViewBag.Username" readonly />
+                <label for="username">Username</label>
+            </div>
+
+            <!-- Role Selection Dropdown -->
+            <div class="form-floating col-12 py-2">
+                <select id="role" name="role" class="form-select">
+                    @foreach (var role in ViewBag.Roles)
+                    {
+                        <option value="@role.Value">@role.Text</option>
+                    }
+                </select>
+                <label for="role">Select Role</label>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="row pt-3">
+                <div class="col-6 col-md-3">
+                    <button type="submit" class="btn btn-dark form-control">Assign Role</button>
+                </div>
+                <div class="col-6 col-md-3">
+                    <a asp-controller="User" asp-action="Index" class="btn btn-outline-dark border form-control">
+                        Back to User List
+                    </a>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Additional client-side functionality if needed
+        });
+    </script>
+}
+
+
+
+
+
+@* @model OnlineBookStoreMVC.DTOs.UserDto
+
+@{
+    ViewData["Title"] = "Assign Role";
+}
+
 <h2>Assign Role to @ViewBag.Username</h2>
 
 <form asp-controller="Admin" asp-action="AssignRole" method="post">
@@ -22,3 +85,4 @@
     <button type="submit" class="btn btn-primary">Assign Role</button>
     <a asp-controller="User" asp-action="Index" class="btn btn-secondary">Back to User List</a>
 </form>
+ *@

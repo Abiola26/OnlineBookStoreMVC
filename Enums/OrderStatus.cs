@@ -4,6 +4,11 @@
     {
         Pending = 1,
         Shipping,
-        Received
+        Received,
+        InProcess,
+        PaymentPending,
+        Completed,
+        Approved,
+        All
     }
 }

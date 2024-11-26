@@ -26,10 +26,10 @@ namespace OnlineBookStoreMVC.Controllers
             _notyf = notyfService;
         }
 
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
+        public async Task<IActionResult> Index()
         {
-            var paginatedBooks = await _bookService.GetPaginatedBooksAsync(page, pageSize);
-            return View(paginatedBooks);
+            var books = await _bookService.GetAllBooksAsync();
+            return View(books);
         }
 
         public async Task<IActionResult> GetBooksMissingCoverImage()

@@ -180,3 +180,17 @@ h2.text-center {
         background-color: #d89e2a;
     }
 
+
+.card-header {
+    background-color: #00695c;
+    color: #ffffff;
+}
+
+.btn-group .btn {
+    margin-right: 5px;
+}
+
+.table th {
+    text-align: center;
+}
+
