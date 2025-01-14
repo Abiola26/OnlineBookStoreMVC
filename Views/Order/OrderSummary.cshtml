@@ -1,4 +1,183 @@
-﻿@model OnlineBookStoreMVC.DTOs.OrderSummaryDto
+﻿@* @model OnlineBookStoreMVC.DTOs.OrderSummaryDto
+
+<form method="post" id="paymentForm">
+    <input asp-for="Address.Id" hidden />
+
+    <div class="container mt-5">
+        <div class="card shadow-lg border-0">
+            <!-- Header Section -->
+            <div class="card-header bg-secondary bg-gradient text-light py-4">
+                <div class="row px-4">
+                    <div class="col-6">
+                        <h5 class="pt-2 text-white">
+                            <i class="fas fa-shopping-cart"></i> &nbsp; Order Summary
+                        </h5>
+                    </div>
+                    <div class="col-6 text-end">
+                        <a asp-controller="Address" asp-action="Index" class="btn btn-outline-danger btn-sm">Back to Cart</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Body Section -->
+            <div class="card-body">
+                <div class="container rounded p-2">
+                    <div class="row">
+                        <!-- Shipping Details Section -->
+                        <div class="col-12 col-lg-6 pb-4">
+                            <div class="row">
+                                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="text-info">Shipping Details:</span>
+                                </h4>
+                            </div>
+
+                            <!-- Full Name -->
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>Name</label>
+                                </div>
+                                <div class="col-9">
+                                    <input asp-for="Address.FullName" class="form-control" />
+                                    <span asp-validation-for="Address.FullName" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Phone Number -->
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>Phone</label>
+                                </div>
+                                <div class="col-9">
+                                    <input asp-for="Address.PhoneNumber" class="form-control" />
+                                    <span asp-validation-for="Address.PhoneNumber" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Street Address -->
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>Street Address</label>
+                                </div>
+                                <div class="col-9">
+                                    <input asp-for="Address.DeliveryAddress" class="form-control" />
+                                    <span asp-validation-for="Address.DeliveryAddress" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- City -->
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>City</label>
+                                </div>
+                                <div class="col-9">
+                                    <input asp-for="Address.City" class="form-control" />
+                                    <span asp-validation-for="Address.City" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- State -->
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>State</label>
+                                </div>
+                                <div class="col-9">
+                                    <input asp-for="Address.Region" class="form-control" />
+                                    <span asp-validation-for="Address.Region" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Order Summary Section -->
+                        <div class="col-12 col-lg-5 offset-lg-1">
+                            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-info">Order Summary:</span>
+                            </h4>
+                            <ul class="list-group mb-3">
+                                @foreach (var item in Model.ShoppingCart.ShoppingCartItems)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="my-0">@item.BookTitle</h6>
+                                            <small class="text-muted">Quantity: @item.Quantity</small>
+                                        </div>
+                                        <span class="text-muted">₦@item.TotalPrice.ToString("N")</span>
+                                    </li>
+                                }
+                                <li class="list-group-item d-flex justify-content-between bg-light">
+                                    <small class="text-info">Total (₦)</small>
+                                    <strong class="text-info">₦@Model.ShoppingCart.TotalPrice.ToString("N")</strong>
+                                </li>
+                                <div class="mb-3">
+                                    <label class="form-label">Payment Method</label>
+                                    <select class="form-select" id="paymentMethod">
+                                        <option value="">__Select__</option>
+                                        <option value="cash">Cash on Delivery</option>
+                                        <option value="card">Credit Card</option>
+                                        <option value="paypal">Paypal</option>
+                                    </select>
+                                </div>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Section -->
+            <div class="card-footer">
+                <div class="row">
+                    <div class="col-12 col-md-8 pt-2">
+                        <p style="color:maroon; font-size:14px;">
+                            Estimate Arrival Date:
+                            @DateTime.Now.AddDays(7).ToShortDateString() - @DateTime.Now.AddDays(14).ToShortDateString()
+                        </p>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa-solid fa-check"></i> Place Order & Pay
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('paymentForm');
+            const paymentMethodSelect = document.getElementById('paymentMethod');
+
+            form.addEventListener('submit', function (e) {
+                const selectedPaymentMethod = paymentMethodSelect.value;
+
+                if (!selectedPaymentMethod) {
+                    e.preventDefault();
+                    alert('Please select a payment method.');
+                    return;
+                }
+
+                switch (selectedPaymentMethod) {
+                    case 'cash':
+                        form.action = '@Url.Action("OrderConfirmation", "Order")';
+                        break;
+                    case 'card':
+                        form.action = '@Url.Action("PlaceOrder", "Order")';
+                        break;
+                    case 'paypal':
+                        form.action = '@Url.Action("Paypal", "Order")';
+                        break;
+                    default:
+                        e.preventDefault();
+                        alert('Invalid payment method selected.');
+                }
+            });
+        });
+    </script>
+} *@
+
+
+@model OnlineBookStoreMVC.DTOs.OrderSummaryDto
 
 <form method="post" asp-action="PlaceOrder">
     <input asp-for="Address.Id" hidden />
@@ -107,6 +286,16 @@
                                         <small class="text-info">Total (₦)</small>
                                         <strong class="text-info">₦@Model.ShoppingCart.TotalPrice.ToString("N")</strong>
                                     </li>
+                                <div class="mb-3">
+                                    <label class="form-label">Payment Method</label>
+                                    <select class="form-select" asp-for="PaymentMethod">
+                                        <!-- Enums are automatically converted to their display names -->
+                                        <option value="">__Select__</option>
+                                        <option value="cash">Cash on Delivery</option>
+                                        <option value="card">Credit Card</option>
+                                        <option value="paypal">Paypal</option>
+                                    </select>
+                                </div>
                                 </ul>
                             </div>
                         </div>
@@ -155,94 +344,3 @@
             </div>
         </div>
 </form>
-
-
-
-@* @model OnlineBookStoreMVC.DTOs.OrderSummaryDto
-
-<div class="container my-5">
-    <h2 class="text-center mb-4">Order Summary</h2>
-
-    <div class="card shadow-lg border-0 mb-4">
-        <div class="card-body">
-            <h4>Delivery Address</h4>
-            <p><strong>@Model.Address.FullName</strong></p>
-            <p>@Model.Address.DeliveryAddress, @Model.Address.City</p>
-            <p>@Model.Address.Region</p>
-            <p>Phone: @Model.Address.PhoneNumber</p>
-        </div>
-    </div>
-
-    <div class="card shadow-lg border-0">
-        <div class="card-body">
-            <h4>Your Items</h4>
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>Title</th>
-                            <th>Quantity</th>
-                            <th>Price (₦)</th>
-                            <th>Total (₦)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model.ShoppingCart.ShoppingCartItems)
-                        {
-                            <tr>
-                                <td>@item.BookTitle</td>
-                                <td>@item.Quantity</td>
-                                <td>₦@item.Price.ToString("N2")</td>
-                                <td>₦@item.TotalPrice.ToString("N2")</td>
-                            </tr>
-                        }
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="3" class="text-right"><strong>Total:</strong></td>
-                            <td><strong>₦@Model.ShoppingCart.TotalPrice.ToString("N2")</strong></td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-
-            <div class="text-right mt-4">
-                <form asp-action="PlaceOrder" method="post">
-                    <input type="hidden" asp-for="UserId" />
-                    <input type="hidden" asp-for="OrderId" />
-
-                    @for (int i = 0; i < Model.ShoppingCart.ShoppingCartItems.Count; i++)
-                    {
-                        <input type="hidden" name="ShoppingCart.ShoppingCartItems[@i].BookId" value="@Model.ShoppingCart.ShoppingCartItems[i].BookId" />
-                        <input type="hidden" name="ShoppingCart.ShoppingCartItems[@i].Quantity" value="@Model.ShoppingCart.ShoppingCartItems[i].Quantity" />
-                        <input type="hidden" name="ShoppingCart.ShoppingCartItems[@i].Price" value="@Model.ShoppingCart.ShoppingCartItems[i].Price" />
-                    }
-
-                    <input type="hidden" asp-for="Address.FullName" />
-                    <input type="hidden" asp-for="Address.PhoneNumber" />
-                    <input type="hidden" asp-for="Address.DeliveryAddress" />
-                    <input type="hidden" asp-for="Address.City" />
-                    <input type="hidden" asp-for="Address.Region" />
-
-                    <input type="hidden" asp-for="ShoppingCart.TotalPrice" />
-
-                    <div class="d-flex justify-content-end">
-                        <a asp-controller="Address" asp-action="Index" class="btn btn-secondary me-2">
-                            <i class="fa-solid fa-arrow-left"></i> Back
-                        </a>
-                        <form asp-action="InitializePayment" method="post">
-                            <input type="hidden" asp-for="UserId" />
-                            <input type="hidden" asp-for="ShoppingCart.TotalPrice" />
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fa-solid fa-check"></i> Place Order & Pay
-                            </button>
-                        </form>
-                    </div>
-                </form>
-            </div>
-
-        </div>
-    </div>
-</div> *@
-
-

@@ -17,20 +17,36 @@
     <!-- Card Body -->
     <div class="card-body p-4">
         <div class="row pb-3">
-            <div class="col-6">
-                <!-- Placeholder for additional content on the left, if needed -->
+            <!-- First Group of Buttons -->
+            <div class="col-md-6 text-black">
+                <div>
+                        <a class="btn btn-secondary mb-2" asp-action="DownloadExcelTemplate">Download Excel Template</a>
+                </div>
+                <div>
+                        <a class="btn btn-secondary" asp-action="UploadExcelTemplate">Upload Books</a>
+                </div>
             </div>
-            <div class="col-6 text-end">
-                <a asp-controller="Book" asp-action="Create" class="btn btn-secondary">
-                    <i class="bi bi-plus-circle"></i> Create New Book
-                </a>
+
+            <!-- Second Group of Buttons -->
+            <div class="col-md-6 text-end">
+                <div>
+                        <a class="btn btn-primary mb-2" asp-action="GetBooksMissingCoverImage">Missing Image List</a>
+                </div>
+                
+                <div>
+                        <a asp-controller="Book" asp-action="Create" class="btn btn-secondary">
+                            <i class="bi bi-plus-circle"></i> Create New Book
+                        </a>
+                </div>
             </div>
         </div>
+
 
         <!-- Table -->
         <table id="tblData" class="table table-bordered table-striped w-100">
             <thead>
                 <tr>
+                    <th>S/N</th>
                     <th>Title</th>
                     <th>ISBN</th>
                     <th>Price</th>
@@ -40,24 +56,32 @@
                 </tr>
             </thead>
             <tbody>
+                @{
+                    int serialNumber = 1;
+                }
                 @foreach (var book in Model)
                 {
                     <tr>
+                        <td>@serialNumber</td>
                         <td>@book.Title</td>
                         <td>@book.ISBN</td>
                         <td>@book.Price</td>
                         <td>@book.Author</td>
                         <td>@book.CategoryName</td>
                         <td>
-                            <a asp-controller="Book" asp-action="Edit" asp-route-id="@book.Id" class="btn btn-sm btn-secondary">
-                                Edit
+                            <a asp-controller="Book" asp-action="Edit" asp-route-id="@book.Id" class="btn btn-sm btn-secondary" title="Edit">
+                                <i class="fas fa-edit"></i>
                             </a>
-                            <form asp-controller="Book" asp-action="Delete" asp-route-id="@book.Id" method="post" class="d-inline">
+
+                            <form asp-action="DeleteBook" asp-controller="Book" asp-route-id="@book.Id" method="post" style="display:inline;">
                                 @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
                             </form>
                         </td>
                     </tr>
+                    serialNumber++;
                 }
             </tbody>
         </table>
@@ -68,6 +92,7 @@
     <!-- Include the JavaScript file for DataTables or custom scripts if needed -->
     <script src="~/js/book.js"></script>
 }
+
 
 
 

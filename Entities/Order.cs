@@ -1,4 +1,5 @@
-﻿using OnlineBookStoreMVC.Enums;
+﻿using Microsoft.EntityFrameworkCore;
+using OnlineBookStoreMVC.Enums;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OnlineBookStoreMVC.Entities
@@ -15,6 +16,11 @@ namespace OnlineBookStoreMVC.Entities
         public Address Address { get; set; }
         public Guid? DeliveryId { get; set; }
         public Delivery Delivery { get; set; }
+        [Precision(16, 2)]
+        public decimal ShippingFee { get; set; }
+        public string? PaymentDetails { get; set; }
+        public PaymentMethod PaymentMethod { get; set; }
+        public PaymentStatus PaymentStatus { get; set; }
         public OrderStatus OrderStatus { get; set; }
     } 
 }

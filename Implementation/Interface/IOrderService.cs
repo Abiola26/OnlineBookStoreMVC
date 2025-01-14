@@ -10,12 +10,14 @@ namespace OnlineBookStoreMVC.Implementation.Interface
         Task<OrderDto> CheckoutCompleteAsync(string userId);
         Task<IEnumerable<OrderDto>> GetAllOrdersAsync();
         Task<OrderDto> GetOrderDetailsAsync(Guid id);
-        Task<bool> DeleteOrderAsync(Guid id);
-        Task<IEnumerable<OrderDto>> GetOrdersByStatusAsync(OrderStatus status, string userId = null);
         Task<OrderDto> PlaceOrderAsync(OrderSummaryDto orderSummary);
-        Task<IEnumerable<OrderDto>> GetAllPendingOrdersAsync(string userId);
+        //Task<IEnumerable<OrderDto>> GetAllPendingOrdersAsync(string userId);
         List<Order> GetAllOrders();
-        Task<OrderDto> AssignDeliveryToOrderAsync(Guid orderId, Guid deliveryId);
+        //Task<OrderDto> AssignDeliveryToOrderAsync(Guid orderId, Guid deliveryId);
         Task<OrderSummaryDto> GetOrderSummaryAsync(string userId, Guid? selectedAddressId);
+        Task<IEnumerable<OrderDto>> GetOrdersAsync(string? userId = null);
+        Task<OrderDto> GetOrderByIdAsync(Guid orderId, string? userId = null);
+        Task<bool> UpdateOrderStatusAsync(Guid orderId, OrderStatus? orderStatus, PaymentStatus? paymentStatus);
+        Task<IEnumerable<OrderDto>> GetOrdersByUserIdAsync(string userId);
     }
 }

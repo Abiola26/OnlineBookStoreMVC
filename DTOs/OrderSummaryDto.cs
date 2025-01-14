@@ -1,4 +1,6 @@
-﻿namespace OnlineBookStoreMVC.DTOs
+﻿using OnlineBookStoreMVC.Enums;
+
+namespace OnlineBookStoreMVC.DTOs
 {
     public class OrderSummaryDto
     {
@@ -6,7 +8,8 @@
         public ShoppingCartDto ShoppingCart { get; set; }
         public AddressDto Address { get; set; }
         public string UserId { get; set; }
-        public string OrderId { get; set; } 
+        public string OrderId { get; set; }
+        public PaymentMethod PaymentMethod { get; set; }
         public decimal OrderTotal => ShoppingCart?.TotalPrice ?? 0m;
     }
 

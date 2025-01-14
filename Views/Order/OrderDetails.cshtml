@@ -1,42 +1,209 @@
-﻿@model OnlineBookStoreMVC.DTOs.OrderDto
-
+﻿@using OnlineBookStoreMVC.Enums
+@model OnlineBookStoreMVC.DTOs.OrderDto
 @{
-    ViewData["Title"] = "Order Details";
+    string paymentBadgeColor = Model.PaymentStatus switch
+    {
+        PaymentStatus.Pending => "bg-body",  // Neutral color indicating awaiting action
+        PaymentStatus.Completed => "bg-success",  // Successful completion
+        PaymentStatus.Failed => "bg-danger",  // Failure, red color
+        _ => "bg-danger"  // Default to danger for any unknown status
+    };
+
+    string orderBadgeColor = Model.OrderStatus switch
+    {
+        OrderStatus.Created => "bg-warning",  // New, Pending
+        OrderStatus.Accepted => "bg-success",  // Positive action
+        OrderStatus.Canceled => "bg-secondary",  // Canceled or neutral
+        OrderStatus.Shipped => "bg-primary",  // In-progress or shipping
+        OrderStatus.Delivered => "bg-success",  // Completed and successful
+        OrderStatus.Returned => "bg-info text-dark",  // Issue or return
+        OrderStatus.Deleted => "bg-dark",  // Deleted or discarded
+        _ => "bg-danger"  // Default to danger for unknown statuses
+    };
 }
 
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white text-center">
-                    <h2 class="card-title">Order Details</h2>
-                    <p class="lead">Order ID: @Model.Id</p>
-                    <p class="lead">Ordered by: @Model.UserName</p>
-                </div>
-                <div class="card-body">
-                    <h4 class="text-center text-muted mb-4">Order Summary</h4>
-                    <ul class="list-group list-group-flush mb-4">
-                        @foreach (var item in Model.OrderItems)
-                        {
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h5 class="mb-1">@item.BookTitle</h5>
-                                    <h5>Quantity: @item.Quantity</h5>
-                                </div>
-                                <span class="badge badge-primary badge-pill">₦@item.UnitPrice.ToString("N2")</span>
-                            </li>
-                        }
-                    </ul>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="text-muted">Order Date: <strong>@Model.OrderDate.ToString("MMMM dd, yyyy")</strong></h5>
-                        <h4>Total: <strong>₦@Model.TotalAmount.ToString("N2")</strong></h4>
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-secondary bg-gradient text-white">
+            <h3>Order Details</h3>
+        </div>
+        <div class="card-body">
+            <!-- Order Summary -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="order-details">
+                        <div class="order-id">
+                            <h5><strong>Order ID:</strong> @Model.Id</h5>
+                        </div>
+
+                        <div class="order-date">
+                            <p><strong>Order Date:</strong> @Model.OrderDate.ToString("dd MMM yyyy, hh:mm ")</p>
+                        </div>
+
+                        <div class="Payment-Method">
+                            <p><strong>Payment Method:</strong> @Model.PaymentMethod</p>
+                        </div>
+
+                        <div class="order-status">
+                            <p>
+                                <strong>Order Status:</strong>
+                                <span class="badge rounded-pill @orderBadgeColor">@Model.OrderStatus</span>
+                                @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+                                {
+                                    <a href="#" class="ms-2" data-bs-toggle="modal" data-bs-target="#orderStatusModal">Edit</a>
+                                }
+                            </p>
+                        </div>
+
+                        <div class="payment-status">
+                            <p>
+                                <strong>Payment Status:</strong>
+                                <span class="badge rounded-pill @paymentBadgeColor">@Model.PaymentStatus</span>
+                                @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+                                {
+                                  <a href = "#" class="mx-2" data-bs-toggle="modal" data-bs-target="#paymentStatusModal">Edit</a>
+                                  <a href="#" class="mx-2" data-bs-toggle="modal" data-bs-target="#paymentDetailsModal">Details</a>
+                                }
+                            </p>
+                        </div>
+
+                        <div class="total-amount">
+                            <p><strong>Total Amount:</strong> @Model.TotalAmount.ToString("C", new System.Globalization.CultureInfo("en-NG"))</p>
+                        </div>
                     </div>
                 </div>
-                <div class="card-footer text-center">
-                    <a asp-action="Index" class="btn btn-secondary">Back to Orders</a>
+                <div class="col-md-6">
+                    <h5><strong>User Details</strong></h5>
+                    <p><strong>Name:</strong> @Model.UserName</p>
+                    <p><strong>DeliveryAddress:</strong>@Model.DeliveryAddress</p>
+                    <p><strong>DeliveryPhoneNumber:</strong>@Model.DeliveryPhoneNumber</p>
+                    <p><strong>Email:</strong>@Model.DeliveryEmail</p>
                 </div>
+            </div>
+
+            <!-- Order Items -->
+            <h5><strong>Order Items</strong></h5>
+            <table class="table table-bordered">
+                <thead class="table-secondary">
+                    <tr>
+                        <th>Book Title</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.OrderItems)
+                    {
+                        <tr>
+                            <td>@item.BookTitle</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.UnitPrice.ToString("C", new System.Globalization.CultureInfo("en-NG"))</td>
+                            <td>@String.Format("{0:C}", item.Quantity * item.UnitPrice, new System.Globalization.CultureInfo("en-NG"))</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <!-- Total -->
+            <div class="d-flex justify-content-end mt-3">
+                <h5><strong>Grand Total:</strong> @Model.TotalAmount.ToString("C", new System.Globalization.CultureInfo("en-NG"))</h5>
+            </div>
+
+            <div class="d-flex justify-content-end mt-4">
+                @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+                {
+                    <a href="@Url.Action("AdminOrders", "Order")" class="btn btn-secondary me-2">Back to Orders</a>
+                    <button class="btn btn-primary">Download Invoice</button>
+                }
+                else
+                {
+                    <a href="@Url.Action("UserOrders", "Order")" class="btn btn-secondary me-2">Back to Orders</a>
+                }
             </div>
         </div>
     </div>
 </div>
 
+@if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+{
+    <!-- Payment Status Modal -->
+    <div class="modal fade" id="paymentStatusModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Update Payment Status</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" asp-controller="Order" asp-action="EditStatus">
+                        <input type="hidden" name="orderId" value="@Model.Id" />
+                        <label>Payment Status</label>
+                        <select class="form-select mb-2" name="paymentStatus">
+                            <option value="Pending">Pending</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Failed">Failed</option>
+                            <option value="Refunded">Refunded</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Order Status Modal -->
+    <div class="modal fade" id="orderStatusModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Update Order Status</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" asp-controller="Order" asp-action="EditStatus">
+                        <input type="hidden" name="orderId" value="@Model.Id" />
+                        <label>Order Status</label>
+                        <select class="form-select mb-2" name="orderStatus">
+                            <option value="Created">Created</option>
+                            <option value="Shipped">Shipped</option>
+                            <option value="Accepted">Accepted</option>
+                            <option value="Canceled">Canceled</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Returned">Returned</option>
+                            <option value="Deleted">Deleted</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Payment Details Modal -->
+<div class="modal fade" id="paymentDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Payment Details</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <p style="white-space: pre-wrap; font-family: monospace">@Html.Raw(Model.PaymentDetails)</p>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

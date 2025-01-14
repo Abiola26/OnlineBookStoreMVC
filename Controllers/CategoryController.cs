@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineBookStoreMVC.Implementation.Interface;
+using OnlineBookStoreMVC.Implementation.Services;
 using OnlineBookStoreMVC.Models.RequestModels;
 
 namespace OnlineBookStoreMVC.Controllers
@@ -89,16 +90,11 @@ namespace OnlineBookStoreMVC.Controllers
             return View(categoryRequest);
         }
 
-        [HttpGet("DeleteCategory")]
+        [HttpPost("DeleteCategory")]
         public async Task<IActionResult> DeleteCategory(Guid id)
         {
-            var success = await _categoryService.DeleteCategoryAsync(id);
-            _notyf.Success("Category Deleted Succesfully");
-            if (!success)
-            {
-                return NotFound();
-            }
-
+            await _categoryService.DeleteCategoryAsync(id);
+            _notyf.Success("Category has been successfully deleted.");
             return RedirectToAction(nameof(Index));
         }
     }

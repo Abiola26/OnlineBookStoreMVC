@@ -1,8 +1,9 @@
-﻿using OnlineBookStoreMVC.Enums;
+﻿using OnlineBookStoreMVC.Entities;
+using OnlineBookStoreMVC.Enums;
 
 namespace OnlineBookStoreMVC.DTOs
 {
-    public class OrderDto
+    public class OrderDto: BaseEntity
     {
         public Guid Id { get; set; }
         public string UserId { get; set; }
@@ -13,9 +14,13 @@ namespace OnlineBookStoreMVC.DTOs
         public Guid? DeliveryId { get; set; }
         public string DeliveryEmail { get; set; }
         public string DeliveryName { get; set; } 
-        public string DeliveryPhoneNumber { get; set; } 
+        public string DeliveryPhoneNumber { get; set; }
+        public string DeliveryAddress { get; set; }
+        public decimal ShippingFee { get; set; }
         public OrderStatus OrderStatus { get; set; }
-        public string Status { get; set; }
+        public string PaymentDetails { get; set; }
+        public PaymentMethod PaymentMethod { get; set; }
+        public PaymentStatus PaymentStatus { get; set; }
     }
 
 }

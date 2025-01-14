@@ -141,10 +141,11 @@ namespace OnlineBookStoreMVC.Controllers
             return View(bookRequest);
         }
 
-        [HttpPost]
+        [HttpPost("DeleteBook/{id}")]
         public async Task<IActionResult> DeleteBook(Guid id)
         {
             await _bookService.DeleteBookAsync(id);
+            _notyf.Success("Book has been successfully deleted.");
             return RedirectToAction(nameof(Index));
         }
 

@@ -10,6 +10,12 @@
             </div>
         </div>
     </div>
+    <div class="d-flex justify-content-between align-items-center mb-3 px-4">
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#generateReportModal">
+            <i class="fas fa-file-export"></i> Generate Report
+        </button>
+    </div>
+
     <div class="card-body p-4">
         <table id="tblData" class="table table-bordered table-striped" style="width:100%">
             <thead>
@@ -71,7 +77,89 @@
     </div>
 </div>
 
+
+
+<!-- Modal Structure -->
+<div class="modal fade" id="generateReportModal" tabindex="-1" aria-labelledby="generateReportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="generateReportModalLabel">Generate Report</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Report Form -->
+                <form method="post" action="@Url.Action("GenerateReport", "Report")" id="generateReportForm">
+                    <div class="form-group mb-3">
+                        <label for="fromDate" class="form-label">From Date:</label>
+                        <input type="date" id="fromDate" name="fromDate" class="form-control" required />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="toDate" class="form-label">To Date:</label>
+                        <input type="date" id="toDate" name="toDate" class="form-control" required />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" form="generateReportForm">Download Report</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @section Scripts {
     <!-- Include the JavaScript file for DataTables or custom scripts if needed -->
     <script src="~/js/order.js"></script>
 }
+
+
+@* @model IEnumerable<OnlineBookStoreMVC.DTOs.OrderDto>
+
+@{
+    ViewData["Title"] = "Order List";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form method="get" asp-action="FilterOrders">
+    <select name="status" onchange="this.form.submit()">
+        <option value="">All</option>
+        <option value="Pending">Pending</option>
+        <option value="InProcess">In Process</option>
+        <option value="PaymentPending">Payment Pending</option>
+        <option value="Completed">Completed</option>
+        <option value="Approved">Approved</option>
+    </select>
+</form>
+
+@* <a asp-action="AllPendingOrderSummaries" asp-controller="Order" class="btn btn-warning mb-3">View Pending Orders</a>
+<a asp-action="GenerateReport" asp-controller="Report" class="btn btn-success mb-3">Generate Report</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>User</th>
+            <th>Order Date</th>
+            <th>Total Amount</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>@order.Id</td>
+                <td>@order.UserName</td>
+                <td>@order.OrderDate.ToString("yyyy-MM-dd")</td>
+                <td>@order.TotalAmount.ToString("N2")</td>
+                <td>
+                    <a asp-action="UserOrders" asp-route-userId="@order.UserId" class="btn btn-primary">View User Orders</a>
+                    <a asp-action="OrderDetails" asp-route-id="@order.Id" class="btn btn-primary">View Order Detail</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table> *@
