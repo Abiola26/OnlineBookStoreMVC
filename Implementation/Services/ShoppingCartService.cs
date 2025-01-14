@@ -198,6 +198,5 @@ namespace OnlineBookStoreMVC.Implementation.Services
             return cart.ShoppingCartItems.Sum(item => item.Quantity * item.Price);
         }
 
-
     }
 }

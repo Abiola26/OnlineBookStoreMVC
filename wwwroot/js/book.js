@@ -1,9 +1,5 @@
 var dataTable;
 
-//$(document).ready(function () {
-//    loadDataTable();
-//});
-// In product.js
 $(document).ready(function () {
     $('#tblData').DataTable({
         paging: true,

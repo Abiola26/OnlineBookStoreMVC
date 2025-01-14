@@ -38,13 +38,6 @@ namespace OnlineBookStoreMVC.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> OrderDetails(Guid id)
-        {
-            var order = await _orderService.GetOrderDetailsAsync(id);
-            return View(order);
-        }
-      
-
         [HttpGet]
         public async Task<IActionResult> OrderSummary(Guid selectedAddressId)
         {
@@ -75,41 +68,12 @@ namespace OnlineBookStoreMVC.Controllers
         }
 
         [Authorize(Roles = "Admin,SuperAdmin")]
-        public async Task<IActionResult> ListOrders()
+        public async Task<IActionResult> AdminOrders()
         {
-            var orders = await _orderService.GetAllOrdersAsync(); 
+            var orders = await _orderService.GetAllOrdersAsync();
+            ViewBag.Orders = orders;
             return View(orders);
         }
-
-        //public async Task<IActionResult> FilterOrders(OrderStatus status, string userId = null)
-        //{
-        //    userId ??= _userManager.GetUserId(User); // Get the current user's ID if not provided
-        //    var orders = await _orderService.GetOrdersByStatusAsync(status, userId);
-
-        //    return View("OrderList", orders); // Use the appropriate view to display the orders
-        //}
-
-        [HttpGet]
-        public async Task<IActionResult> FilterOrders(OrderStatus? status)
-        {
-            var orders = await _orderService.GetOrdersByStatusAsync(status ?? OrderStatus.All);
-            return View(orders);
-        }
-
-
-        [HttpPost]
-        public async Task<IActionResult> DeleteOrder(Guid id)
-        {
-            var success = await _orderService.DeleteOrderAsync(id);
-            if (!success)
-            {
-                return NotFound();
-            }
-
-            _notyf.Success("Order deleted successfully.");
-            return RedirectToAction(nameof(Index));
-        }
-
         public async Task<IActionResult> OrderConfirmation(Guid orderId)
         {
             var order = await _orderService.GetOrderDetailsAsync(orderId);
@@ -149,13 +113,54 @@ namespace OnlineBookStoreMVC.Controllers
             return Redirect(paymentResponse.Data.AuthorizationUrl);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> AllPendingOrderSummaries()
+        public async Task<IActionResult> UserOrders()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var orderSummaries = await _orderService.GetAllPendingOrdersAsync(userId);
-            return View(orderSummaries);
+            var user = await _userManager.GetUserAsync(User);
+            var orders = await _orderService.GetOrdersByUserIdAsync(user.Id);
+            ViewBag.Orders = orders;
+            return View(orders);
         }
+
+        [Authorize]
+        public async Task<IActionResult> OrderDetails(Guid id)
+        {
+            var order = await _orderService.GetOrderDetailsAsync(id);
+
+            if (order == null)
+            {
+                return NotFound(new { Message = "Order not found" });
+            }
+
+            return View(order);
+        }
+
+        [Authorize(Roles = "Admin,SuperAdmin")]
+        [HttpPost]
+        public async Task<IActionResult> EditStatus(Guid orderId, OrderStatus? orderStatus, PaymentStatus? paymentStatus)
+        {
+            try
+            {
+                var result = await _orderService.UpdateOrderStatusAsync(orderId, orderStatus, paymentStatus);
+                if (result)
+                    TempData["Success"] = "Order status updated successfully.";
+                else
+                    TempData["Error"] = "Failed to update order status.";
+            }
+            catch (KeyNotFoundException)
+            {
+                TempData["Error"] = "Order not found.";
+            }
+
+            return RedirectToAction(nameof(AdminOrders));
+        }
+
+        //[HttpGet]
+        //public async Task<IActionResult> AllPendingOrderSummaries()
+        //{
+        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    var orderSummaries = await _orderService.GetAllPendingOrdersAsync(userId);
+        //    return View(orderSummaries);
+        //}
 
         [HttpGet]
         public async Task<IActionResult> AssignDeliveryToOrder(Guid id)
@@ -163,14 +168,14 @@ namespace OnlineBookStoreMVC.Controllers
             return View(new OrderDto { Id = id });
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AssignDeliveryToOrder([FromRoute] Guid id, Guid deliveryId)
-        {
-            var result = await _orderService.AssignDeliveryToOrderAsync(id, deliveryId);
+        //[HttpPost]
+        //public async Task<IActionResult> AssignDeliveryToOrder([FromRoute] Guid id, Guid deliveryId)
+        //{
+        //    var result = await _orderService.AssignDeliveryToOrderAsync(id, deliveryId);
 
-            _notyf.Success(result != null ? "Delivery assigned successfully." : "Failed to assign delivery. Please try again.");
+        //    _notyf.Success(result != null ? "Delivery assigned successfully." : "Failed to assign delivery. Please try again.");
 
-            return RedirectToAction("AllPendingOrderSummaries");
-        }
+        //    return RedirectToAction("AllPendingOrderSummaries");
+        //}
     }
 }
